@@ -14,6 +14,7 @@ declare global {
   const abortNavigation: typeof import('../../node_modules/nuxt/dist/app/composables/router')['abortNavigation']
   const acceptHMRUpdate: typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables')['acceptHMRUpdate']
   const addRouteMiddleware: typeof import('../../node_modules/nuxt/dist/app/composables/router')['addRouteMiddleware']
+  const buildNotificationServiceConfig: typeof import('../../utils/notifications')['buildNotificationServiceConfig']
   const callOnce: typeof import('../../node_modules/nuxt/dist/app/composables/once')['callOnce']
   const cancelIdleCallback: typeof import('../../node_modules/nuxt/dist/app/compat/idle-callback')['cancelIdleCallback']
   const clearError: typeof import('../../node_modules/nuxt/dist/app/composables/error')['clearError']
@@ -21,6 +22,8 @@ declare global {
   const clearNuxtState: typeof import('../../node_modules/nuxt/dist/app/composables/state')['clearNuxtState']
   const computed: typeof import('vue')['computed']
   const createError: typeof import('../../node_modules/nuxt/dist/app/composables/error')['createError']
+  const createLogger: typeof import('../../utils/logger')['createLogger']
+  const createNotificationService: typeof import('../../utils/notifications')['createNotificationService']
   const customRef: typeof import('vue')['customRef']
   const defineAppConfig: typeof import('../../node_modules/nuxt/dist/app/nuxt')['defineAppConfig']
   const defineAsyncComponent: typeof import('vue')['defineAsyncComponent']
@@ -36,6 +39,7 @@ declare global {
   const defineStore: typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables')['defineStore']
   const effect: typeof import('vue')['effect']
   const effectScope: typeof import('vue')['effectScope']
+  const generateId: typeof import('../../utils/notifications')['generateId']
   const getAppManifest: typeof import('../../node_modules/nuxt/dist/app/composables/manifest')['getAppManifest']
   const getBuckets: typeof import('../../utils/appwrite')['getBuckets']
   const getCollections: typeof import('../../utils/appwrite')['getCollections']
@@ -43,7 +47,9 @@ declare global {
   const getCurrentLocation: typeof import('../../utils/mobile')['getCurrentLocation']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
   const getDatabaseId: typeof import('../../utils/appwrite')['getDatabaseId']
+  const getPublicConfig: typeof import('../../utils/config')['getPublicConfig']
   const getRouteRules: typeof import('../../node_modules/nuxt/dist/app/composables/manifest')['getRouteRules']
+  const getStatusLabel: typeof import('../../utils/notifications')['getStatusLabel']
   const h: typeof import('vue')['h']
   const hasInjectionContext: typeof import('vue')['hasInjectionContext']
   const initializePushNotifications: typeof import('../../utils/mobile')['initializePushNotifications']
@@ -60,10 +66,13 @@ declare global {
   const isVue2: typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi')['isVue2']
   const isVue3: typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi')['isVue3']
   const loadPayload: typeof import('../../node_modules/nuxt/dist/app/composables/payload')['loadPayload']
+  const logger: typeof import('../../utils/logger')['logger']
   const markRaw: typeof import('vue')['markRaw']
+  const markSSR: typeof import('../../utils/metrics')['markSSR']
   const mergeModels: typeof import('vue')['mergeModels']
   const navigateTo: typeof import('../../node_modules/nuxt/dist/app/composables/router')['navigateTo']
   const nextTick: typeof import('vue')['nextTick']
+  const notificationTemplates: typeof import('../../utils/notifications')['notificationTemplates']
   const onActivated: typeof import('vue')['onActivated']
   const onBeforeMount: typeof import('vue')['onBeforeMount']
   const onBeforeRouteLeave: typeof import('../../node_modules/vue-router')['onBeforeRouteLeave']
@@ -85,15 +94,18 @@ declare global {
   const preloadComponents: typeof import('../../node_modules/nuxt/dist/app/composables/preload')['preloadComponents']
   const preloadPayload: typeof import('../../node_modules/nuxt/dist/app/composables/payload')['preloadPayload']
   const preloadRouteComponents: typeof import('../../node_modules/nuxt/dist/app/composables/preload')['preloadRouteComponents']
+  const prepareAndSendNotifications: typeof import('../../utils/notifications')['prepareAndSendNotifications']
   const prerenderRoutes: typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['prerenderRoutes']
   const provide: typeof import('vue')['provide']
   const proxyRefs: typeof import('vue')['proxyRefs']
   const reactive: typeof import('vue')['reactive']
+  const readString: typeof import('../../utils/config')['readString']
   const readonly: typeof import('vue')['readonly']
   const ref: typeof import('vue')['ref']
   const refreshCookie: typeof import('../../node_modules/nuxt/dist/app/composables/cookie')['refreshCookie']
   const refreshNuxtData: typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['refreshNuxtData']
   const reloadNuxtApp: typeof import('../../node_modules/nuxt/dist/app/composables/chunk')['reloadNuxtApp']
+  const replaceTemplateVariables: typeof import('../../utils/notifications')['replaceTemplateVariables']
   const requestIdleCallback: typeof import('../../node_modules/nuxt/dist/app/compat/idle-callback')['requestIdleCallback']
   const resolveComponent: typeof import('vue')['resolveComponent']
   const setInterval: typeof import('../../node_modules/nuxt/dist/app/compat/interval')['setInterval']
@@ -122,6 +134,7 @@ declare global {
   const useAppwriteClient: typeof import('../../utils/appwrite')['useAppwriteClient']
   const useAppwriteDatabases: typeof import('../../utils/appwrite')['useAppwriteDatabases']
   const useAsyncData: typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['useAsyncData']
+  const useAsyncResource: typeof import('../../composables/useAsyncResource')['useAsyncResource']
   const useAttrs: typeof import('vue')['useAttrs']
   const useAuthStore: typeof import('../../stores/auth')['useAuthStore']
   const useCartSidebar: typeof import('../../composables/useCartSidebar')['useCartSidebar']
@@ -129,11 +142,14 @@ declare global {
   const useCookie: typeof import('../../node_modules/nuxt/dist/app/composables/cookie')['useCookie']
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
+  const useCustomersStore: typeof import('../../stores/customers')['useCustomersStore']
+  const useDeferredRender: typeof import('../../composables/useDeferredRender')['useDeferredRender']
   const useError: typeof import('../../node_modules/nuxt/dist/app/composables/error')['useError']
   const useFaviconPwaIcon: typeof import('../../node_modules/@vite-pwa/nuxt/dist/runtime/composables/index')['useFaviconPwaIcon']
   const useFetch: typeof import('../../node_modules/nuxt/dist/app/composables/fetch')['useFetch']
   const useHead: typeof import('../../node_modules/nuxt/dist/app/composables/head')['useHead']
   const useHeadSafe: typeof import('../../node_modules/nuxt/dist/app/composables/head')['useHeadSafe']
+  const useHookahsStore: typeof import('../../stores/hookahs')['useHookahsStore']
   const useHydration: typeof import('../../node_modules/nuxt/dist/app/composables/hydrate')['useHydration']
   const useId: typeof import('vue')['useId']
   const useImage: typeof import('../../node_modules/@nuxt/image/dist/runtime/composables')['useImage']
@@ -150,6 +166,7 @@ declare global {
   const useNuxtApp: typeof import('../../node_modules/nuxt/dist/app/nuxt')['useNuxtApp']
   const useNuxtData: typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']
   const useNuxtDevTools: typeof import('../../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']
+  const useOrdersStore: typeof import('../../stores/orders')['useOrdersStore']
   const usePWA: typeof import('../../node_modules/@vite-pwa/nuxt/dist/runtime/composables/index')['usePWA']
   const usePinia: typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables')['usePinia']
   const usePreviewMode: typeof import('../../node_modules/nuxt/dist/app/composables/preview')['usePreviewMode']
@@ -212,6 +229,7 @@ declare global {
   const withMemo: typeof import('vue')['withMemo']
   const withModifiers: typeof import('vue')['withModifiers']
   const withScopeId: typeof import('vue')['withScopeId']
+  const withTiming: typeof import('../../utils/metrics')['withTiming']
 }
 // for type re-export
 declare global {
@@ -219,11 +237,20 @@ declare global {
   export type { Component, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
+  export type { AsyncResource } from '../../composables/useAsyncResource'
+  import('../../composables/useAsyncResource')
+  // @ts-ignore
+  export type { PublicRuntimeShape } from '../../utils/config'
+  import('../../utils/config')
+  // @ts-ignore
   export type { SendGridProvider, MailgunProvider, ResendProvider, SMTPProvider, EmailProviderFactory, EmailProvider, EmailResponse } from '../../utils/email-providers'
   import('../../utils/email-providers')
   // @ts-ignore
   export type { NotificationService, NotificationConfig, NotificationResult } from '../../utils/notification-service'
   import('../../utils/notification-service')
+  // @ts-ignore
+  export type { NotificationTemplate, NotificationHistory, NotificationSettings, SendParams } from '../../utils/notifications'
+  import('../../utils/notifications')
   // @ts-ignore
   export type { SMSRuProvider, BeelineKZProvider, TwilioProvider, SMSProviderFactory, SMSProvider, SMSResponse } from '../../utils/sms-providers'
   import('../../utils/sms-providers')
@@ -233,9 +260,6 @@ declare global {
   // @ts-ignore
   export type { City } from '../../stores/location'
   import('../../stores/location')
-  // @ts-ignore
-  export type { NotificationTemplate, NotificationHistory, NotificationSettings } from '../../stores/notifications'
-  import('../../stores/notifications')
 }
 // for vue template auto import
 import { UnwrapRef } from 'vue'
@@ -254,6 +278,7 @@ declare module 'vue' {
     readonly abortNavigation: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['abortNavigation']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables')['acceptHMRUpdate']>
     readonly addRouteMiddleware: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['addRouteMiddleware']>
+    readonly buildNotificationServiceConfig: UnwrapRef<typeof import('../../utils/notifications')['buildNotificationServiceConfig']>
     readonly callOnce: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/once')['callOnce']>
     readonly cancelIdleCallback: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/idle-callback')['cancelIdleCallback']>
     readonly clearError: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/error')['clearError']>
@@ -261,6 +286,8 @@ declare module 'vue' {
     readonly clearNuxtState: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/state')['clearNuxtState']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly createError: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/error')['createError']>
+    readonly createLogger: UnwrapRef<typeof import('../../utils/logger')['createLogger']>
+    readonly createNotificationService: UnwrapRef<typeof import('../../utils/notifications')['createNotificationService']>
     readonly customRef: UnwrapRef<typeof import('vue')['customRef']>
     readonly defineAppConfig: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/nuxt')['defineAppConfig']>
     readonly defineAsyncComponent: UnwrapRef<typeof import('vue')['defineAsyncComponent']>
@@ -276,6 +303,7 @@ declare module 'vue' {
     readonly defineStore: UnwrapRef<typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables')['defineStore']>
     readonly effect: UnwrapRef<typeof import('vue')['effect']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
+    readonly generateId: UnwrapRef<typeof import('../../utils/notifications')['generateId']>
     readonly getAppManifest: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/manifest')['getAppManifest']>
     readonly getBuckets: UnwrapRef<typeof import('../../utils/appwrite')['getBuckets']>
     readonly getCollections: UnwrapRef<typeof import('../../utils/appwrite')['getCollections']>
@@ -283,7 +311,9 @@ declare module 'vue' {
     readonly getCurrentLocation: UnwrapRef<typeof import('../../utils/mobile')['getCurrentLocation']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
     readonly getDatabaseId: UnwrapRef<typeof import('../../utils/appwrite')['getDatabaseId']>
+    readonly getPublicConfig: UnwrapRef<typeof import('../../utils/config')['getPublicConfig']>
     readonly getRouteRules: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/manifest')['getRouteRules']>
+    readonly getStatusLabel: UnwrapRef<typeof import('../../utils/notifications')['getStatusLabel']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
     readonly hasInjectionContext: UnwrapRef<typeof import('vue')['hasInjectionContext']>
     readonly initializePushNotifications: UnwrapRef<typeof import('../../utils/mobile')['initializePushNotifications']>
@@ -300,10 +330,13 @@ declare module 'vue' {
     readonly isVue2: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi')['isVue2']>
     readonly isVue3: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi')['isVue3']>
     readonly loadPayload: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/payload')['loadPayload']>
+    readonly logger: UnwrapRef<typeof import('../../utils/logger')['logger']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
+    readonly markSSR: UnwrapRef<typeof import('../../utils/metrics')['markSSR']>
     readonly mergeModels: UnwrapRef<typeof import('vue')['mergeModels']>
     readonly navigateTo: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['navigateTo']>
     readonly nextTick: UnwrapRef<typeof import('vue')['nextTick']>
+    readonly notificationTemplates: UnwrapRef<typeof import('../../utils/notifications')['notificationTemplates']>
     readonly onActivated: UnwrapRef<typeof import('vue')['onActivated']>
     readonly onBeforeMount: UnwrapRef<typeof import('vue')['onBeforeMount']>
     readonly onBeforeRouteLeave: UnwrapRef<typeof import('../../node_modules/vue-router')['onBeforeRouteLeave']>
@@ -325,15 +358,18 @@ declare module 'vue' {
     readonly preloadComponents: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/preload')['preloadComponents']>
     readonly preloadPayload: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/payload')['preloadPayload']>
     readonly preloadRouteComponents: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/preload')['preloadRouteComponents']>
+    readonly prepareAndSendNotifications: UnwrapRef<typeof import('../../utils/notifications')['prepareAndSendNotifications']>
     readonly prerenderRoutes: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['prerenderRoutes']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
     readonly proxyRefs: UnwrapRef<typeof import('vue')['proxyRefs']>
     readonly reactive: UnwrapRef<typeof import('vue')['reactive']>
+    readonly readString: UnwrapRef<typeof import('../../utils/config')['readString']>
     readonly readonly: UnwrapRef<typeof import('vue')['readonly']>
     readonly ref: UnwrapRef<typeof import('vue')['ref']>
     readonly refreshCookie: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/cookie')['refreshCookie']>
     readonly refreshNuxtData: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['refreshNuxtData']>
     readonly reloadNuxtApp: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/chunk')['reloadNuxtApp']>
+    readonly replaceTemplateVariables: UnwrapRef<typeof import('../../utils/notifications')['replaceTemplateVariables']>
     readonly requestIdleCallback: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/idle-callback')['requestIdleCallback']>
     readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
     readonly setInterval: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/interval')['setInterval']>
@@ -362,6 +398,7 @@ declare module 'vue' {
     readonly useAppwriteClient: UnwrapRef<typeof import('../../utils/appwrite')['useAppwriteClient']>
     readonly useAppwriteDatabases: UnwrapRef<typeof import('../../utils/appwrite')['useAppwriteDatabases']>
     readonly useAsyncData: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['useAsyncData']>
+    readonly useAsyncResource: UnwrapRef<typeof import('../../composables/useAsyncResource')['useAsyncResource']>
     readonly useAttrs: UnwrapRef<typeof import('vue')['useAttrs']>
     readonly useAuthStore: UnwrapRef<typeof import('../../stores/auth')['useAuthStore']>
     readonly useCartSidebar: UnwrapRef<typeof import('../../composables/useCartSidebar')['useCartSidebar']>
@@ -369,11 +406,14 @@ declare module 'vue' {
     readonly useCookie: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/cookie')['useCookie']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
+    readonly useCustomersStore: UnwrapRef<typeof import('../../stores/customers')['useCustomersStore']>
+    readonly useDeferredRender: UnwrapRef<typeof import('../../composables/useDeferredRender')['useDeferredRender']>
     readonly useError: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/error')['useError']>
     readonly useFaviconPwaIcon: UnwrapRef<typeof import('../../node_modules/@vite-pwa/nuxt/dist/runtime/composables/index')['useFaviconPwaIcon']>
     readonly useFetch: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/fetch')['useFetch']>
     readonly useHead: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/head')['useHead']>
     readonly useHeadSafe: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/head')['useHeadSafe']>
+    readonly useHookahsStore: UnwrapRef<typeof import('../../stores/hookahs')['useHookahsStore']>
     readonly useHydration: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/hydrate')['useHydration']>
     readonly useId: UnwrapRef<typeof import('vue')['useId']>
     readonly useImage: UnwrapRef<typeof import('../../node_modules/@nuxt/image/dist/runtime/composables')['useImage']>
@@ -390,6 +430,7 @@ declare module 'vue' {
     readonly useNuxtApp: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/nuxt')['useNuxtApp']>
     readonly useNuxtData: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']>
     readonly useNuxtDevTools: UnwrapRef<typeof import('../../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']>
+    readonly useOrdersStore: UnwrapRef<typeof import('../../stores/orders')['useOrdersStore']>
     readonly usePWA: UnwrapRef<typeof import('../../node_modules/@vite-pwa/nuxt/dist/runtime/composables/index')['usePWA']>
     readonly usePinia: UnwrapRef<typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables')['usePinia']>
     readonly usePreviewMode: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/preview')['usePreviewMode']>
@@ -452,5 +493,6 @@ declare module 'vue' {
     readonly withMemo: UnwrapRef<typeof import('vue')['withMemo']>
     readonly withModifiers: UnwrapRef<typeof import('vue')['withModifiers']>
     readonly withScopeId: UnwrapRef<typeof import('vue')['withScopeId']>
+    readonly withTiming: UnwrapRef<typeof import('../../utils/metrics')['withTiming']>
   }
 }

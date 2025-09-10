@@ -23,6 +23,9 @@ type NuxtAppInjections =
   InjectionType<typeof import("../../node_modules/nuxt/dist/app/plugins/check-if-layout-used.js")> &
   InjectionType<typeof import("../../plugins/appwrite.client")> &
   InjectionType<typeof import("../../plugins/echarts.client")> &
+  InjectionType<typeof import("../../plugins/error.client")> &
+  InjectionType<typeof import("../../plugins/error.server")> &
+  InjectionType<typeof import("../../plugins/lazy-components.client")> &
   InjectionType<typeof import("../../node_modules/@vite-pwa/nuxt/dist/runtime/plugins/pwa.client.js")>
 
 declare module '#app' {

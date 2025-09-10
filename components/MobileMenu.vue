@@ -36,20 +36,12 @@
           <!-- City Selector -->
           <section>
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Город</h3>
-            <ClientOnly>
-              <select v-if="location.loaded" v-model="selectedCity" @change="onCityChange" class="w-full text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500">
-                <option v-for="c in location.cities" :key="c" :value="c">{{ c }}</option>
-              </select>
-            </ClientOnly>
+            <CitySelector />
           </section>
           <!-- Language Selector -->
           <section>
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Язык</h3>
-            <ClientOnly>
-              <select v-if="locale.loaded" v-model="selectedLang" @change="onLangChange" class="w-full text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500">
-                <option v-for="l in locale.options" :key="l.code" :value="l.code">{{ l.flag }} {{ l.code.toUpperCase() }}</option>
-              </select>
-            </ClientOnly>
+            <LanguageSelector />
           </section>
           <!-- Navigation -->
           <section>
@@ -79,35 +71,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, watch as _watch } from 'vue'
+import { watch } from 'vue'
 import { useUiStore } from '~/stores/ui'
-import { useLocationStore } from '~/stores/location'
-import { useLocaleStore } from '~/stores/locale'
 import { useCartStore } from '~/stores/cart'
 import { useAuthStore } from '~/stores/auth'
+import CitySelector from '~/components/CitySelector.vue'
+import LanguageSelector from '~/components/LanguageSelector.vue'
 
 const ui = useUiStore()
-const location = useLocationStore()
-const locale = useLocaleStore()
 const cart = useCartStore()
 const auth = useAuthStore()
 
-const selectedCity = ref<string>('')
-const selectedLang = ref<string>('ru')
-
-onMounted(() => {
-  if (location.current) selectedCity.value = location.current as string
-  if (locale.current) selectedLang.value = locale.current.code
-})
-watch(() => location.current, v => { if (v && v !== selectedCity.value) selectedCity.value = v as string })
-watch(() => locale.code, v => { if (v && v !== selectedLang.value) selectedLang.value = v })
-
-function onCityChange() { if (selectedCity.value) location.setCity(selectedCity.value) }
-function onLangChange() { if (selectedLang.value) locale.set(selectedLang.value) }
 function close() { ui.closeMobileMenu() }
 async function logout() { try { await auth.logout(); close() } catch (e) { console.error(e) } }
 
-_watch(() => ui.mobileMenuOpen, (v) => {
+watch(() => ui.mobileMenuOpen, (v: boolean) => {
   if (typeof window !== 'undefined') {
     const el = document.documentElement
     if (v) el.classList.add('overflow-hidden')

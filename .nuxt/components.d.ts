@@ -18,8 +18,10 @@ interface _GlobalComponents {
     'BrandCarousel': typeof import("../components/BrandCarousel.vue")['default']
     'CartItem': typeof import("../components/CartItem.vue")['default']
     'CartSidebar': typeof import("../components/CartSidebar.vue")['default']
+    'CitySelector': typeof import("../components/CitySelector.vue")['default']
     'HookahCard': typeof import("../components/HookahCard.vue")['default']
     'HookahListItem': typeof import("../components/HookahListItem.vue")['default']
+    'LanguageSelector': typeof import("../components/LanguageSelector.vue")['default']
     'MasterCard': typeof import("../components/MasterCard.vue")['default']
     'MobileMenu': typeof import("../components/MobileMenu.vue")['default']
     'NotificationToast': typeof import("../components/NotificationToast.vue")['default']
@@ -66,8 +68,10 @@ interface _GlobalComponents {
     'LazyBrandCarousel': LazyComponent<typeof import("../components/BrandCarousel.vue")['default']>
     'LazyCartItem': LazyComponent<typeof import("../components/CartItem.vue")['default']>
     'LazyCartSidebar': LazyComponent<typeof import("../components/CartSidebar.vue")['default']>
+    'LazyCitySelector': LazyComponent<typeof import("../components/CitySelector.vue")['default']>
     'LazyHookahCard': LazyComponent<typeof import("../components/HookahCard.vue")['default']>
     'LazyHookahListItem': LazyComponent<typeof import("../components/HookahListItem.vue")['default']>
+    'LazyLanguageSelector': LazyComponent<typeof import("../components/LanguageSelector.vue")['default']>
     'LazyMasterCard': LazyComponent<typeof import("../components/MasterCard.vue")['default']>
     'LazyMobileMenu': LazyComponent<typeof import("../components/MobileMenu.vue")['default']>
     'LazyNotificationToast': LazyComponent<typeof import("../components/NotificationToast.vue")['default']>
@@ -120,8 +124,10 @@ export const AppHeader: typeof import("../components/AppHeader.vue")['default']
 export const BrandCarousel: typeof import("../components/BrandCarousel.vue")['default']
 export const CartItem: typeof import("../components/CartItem.vue")['default']
 export const CartSidebar: typeof import("../components/CartSidebar.vue")['default']
+export const CitySelector: typeof import("../components/CitySelector.vue")['default']
 export const HookahCard: typeof import("../components/HookahCard.vue")['default']
 export const HookahListItem: typeof import("../components/HookahListItem.vue")['default']
+export const LanguageSelector: typeof import("../components/LanguageSelector.vue")['default']
 export const MasterCard: typeof import("../components/MasterCard.vue")['default']
 export const MobileMenu: typeof import("../components/MobileMenu.vue")['default']
 export const NotificationToast: typeof import("../components/NotificationToast.vue")['default']
@@ -168,8 +174,10 @@ export const LazyAppHeader: LazyComponent<typeof import("../components/AppHeader
 export const LazyBrandCarousel: LazyComponent<typeof import("../components/BrandCarousel.vue")['default']>
 export const LazyCartItem: LazyComponent<typeof import("../components/CartItem.vue")['default']>
 export const LazyCartSidebar: LazyComponent<typeof import("../components/CartSidebar.vue")['default']>
+export const LazyCitySelector: LazyComponent<typeof import("../components/CitySelector.vue")['default']>
 export const LazyHookahCard: LazyComponent<typeof import("../components/HookahCard.vue")['default']>
 export const LazyHookahListItem: LazyComponent<typeof import("../components/HookahListItem.vue")['default']>
+export const LazyLanguageSelector: LazyComponent<typeof import("../components/LanguageSelector.vue")['default']>
 export const LazyMasterCard: LazyComponent<typeof import("../components/MasterCard.vue")['default']>
 export const LazyMobileMenu: LazyComponent<typeof import("../components/MobileMenu.vue")['default']>
 export const LazyNotificationToast: LazyComponent<typeof import("../components/NotificationToast.vue")['default']>

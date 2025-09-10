@@ -7,8 +7,7 @@
     <AppFooter class="mt-auto" />
     <CartSidebar />
     <NotificationToast />
-    <!-- AgeGate temporarily disabled -->
-    <!-- <AgeGate /> -->
+  <AgeGate />
   </div>
 </template>
 
@@ -21,7 +20,7 @@ import AppHeader from '~/components/AppHeader.vue'
 import AppFooter from '~/components/AppFooter.vue'
 import CartSidebar from '~/components/CartSidebar.vue'
 import NotificationToast from '~/components/NotificationToast.vue'
-// import AgeGate from '~/components/AgeGate.vue'
+import AgeGate from '~/components/AgeGate.vue'
 
 const cartStore = useCartStore()
 const notificationsStore = useNotificationsStore()

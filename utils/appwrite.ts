@@ -1,12 +1,14 @@
 import { Client, Databases, Account } from 'appwrite'
-import { tryUseNuxtApp, useRuntimeConfig } from '#imports'
+import { tryUseNuxtApp } from '#imports'
+import { getPublicConfig, readString } from '~/utils/config'
+import type { CollectionsIds } from '~/types/appwrite'
 
 export const useAppwriteClient = () => {
   const nuxtApp = tryUseNuxtApp()
   if (nuxtApp?.$appwriteClient) return nuxtApp.$appwriteClient as Client
-  const config = useRuntimeConfig()
-  const endpoint = String((config.public as any).appwriteEndpoint || (config.public as any).appwrite?.endpoint || '')
-  const project = String((config.public as any).appwriteProjectId || (config.public as any).appwriteProject || (config.public as any).appwrite?.project || '')
+  const pub = getPublicConfig()
+  const endpoint = readString(pub.appwriteEndpoint || pub.appwrite?.endpoint)
+  const project = readString(pub.appwriteProjectId || pub.appwrite?.project)
   return new Client().setEndpoint(endpoint).setProject(project)
 }
 
@@ -23,25 +25,26 @@ export const useAppwriteAccount = () => {
 }
 
 export const getDatabaseId = (): string => {
-  const cfg = useRuntimeConfig()
-  return String((cfg.public as any).appwriteDatabaseId || 'main')
+  const pub = getPublicConfig()
+  return readString(pub.appwriteDatabaseId, 'main')
 }
 
-export const getCollections = () => {
-  const pub: any = useRuntimeConfig().public
+export const getCollections = (): CollectionsIds => {
+  const pub: any = getPublicConfig() as any
+  const c = pub.appwriteCollections || {}
   return {
-    HOOKAHS: String(pub.appwriteCollections?.hookahs || 'hookahs'),
-    TOBACCOS: String(pub.appwriteCollections?.tobacco || 'tobaccos'),
-    COALS: String(pub.appwriteCollections?.coals || 'coals'),
-    ORDERS: String(pub.appwriteCollections?.orders || 'orders'),
-    USERS: String(pub.appwriteCollections?.users || 'users'),
-    MASTERS: String(pub.appwriteCollections?.masters || 'masters'),
-    MASTER_REVIEWS: String(pub.appwriteCollections?.masterReviews || 'master_reviews'),
-  BOOKINGS: String(pub.appwriteCollections?.bookings || 'master_bookings'),
+    HOOKAHS: readString(c.hookahs, 'hookahs'),
+    TOBACCOS: readString(c.tobacco, 'tobaccos'),
+    COALS: readString(c.coals, 'coals'),
+    ORDERS: readString(c.orders, 'orders'),
+    USERS: readString(c.users, 'users'),
+    MASTERS: readString(c.masters, 'masters'),
+    MASTER_REVIEWS: readString(c.masterReviews, 'master_reviews'),
+    BOOKINGS: readString(c.bookings, 'master_bookings'),
   }
 }
 
 export const getBuckets = () => {
-  const pub: any = useRuntimeConfig().public
-  return { DATA: String(pub.appwriteBuckets?.data || '') }
+  const pub: any = getPublicConfig() as any
+  return { DATA: readString(pub.appwriteBuckets?.data) }
 }

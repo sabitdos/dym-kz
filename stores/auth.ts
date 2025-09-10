@@ -1,56 +1,60 @@
-import { defineStore } from "pinia"
-import { ref, computed } from "vue"
-import type { Models } from "appwrite"
-import { useAppwrite } from "~/composables/useAppwrite"
-import { useRuntimeConfig } from '#imports'
-import { getDatabaseId, getCollections } from "~/utils/appwrite"
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+import type { Models } from 'appwrite'
+import { useAppwrite } from '~/composables/useAppwrite'
+import { getDatabaseId, getCollections } from '~/utils/appwrite'
+import { getPublicConfig } from '~/utils/config'
+import type { UserProfile } from '~/types/appwrite'
+import { logger } from '~/utils/logger'
 
-type User = Models.User<Models.Preferences>
-
-export const useAuthStore = defineStore("auth", () => {
-  const config = useRuntimeConfig()
+export const useAuthStore = defineStore('auth', () => {
   const { databases, account } = useAppwrite()
-  
-  const user = ref<User | null>(null)
+  const pub = getPublicConfig()
+
+  type AccountUser = Models.User<Models.Preferences>
+  const user = ref<(AccountUser & Partial<UserProfile>) | null>(null)
   const isLoading = ref(false)
   const initialized = ref(false)
   const isAuthenticated = computed(() => !!user.value)
-  // Simple admin detection: by custom preference flag or email domain list
-  const adminEmails = (config.public as any).adminEmails ? String((config.public as any).adminEmails).split(',').map((e:string)=>e.trim().toLowerCase()).filter(Boolean) : []
+
+  const adminEmails = (pub.adminEmails ? String(pub.adminEmails) : '')
+    .split(',')
+    .map(e => e.trim().toLowerCase())
+    .filter(Boolean)
+
   const isAdmin = computed(() => {
     const u: any = user.value
     if (!u) return false
-    // preference flag (if profile document has role / isAdmin field)
     if (u.role === 'admin' || u.isAdmin === true) return true
     if (u.prefs && (u.prefs.role === 'admin' || u.prefs.isAdmin === true)) return true
     if (u.email && adminEmails.includes(String(u.email).toLowerCase())) return true
     return false
   })
 
+  const assignUser = (val: any) => {
+    user.value = val as any
+  }
+
   const getCurrentUser = async () => {
-    // Avoid parallel calls
-    if (isLoading.value) {
-      return
-    }
+    if (isLoading.value) return
     try {
       isLoading.value = true
       const accountData = await account.get()
       const dbId = getDatabaseId()
-      const cols: any = getCollections()
+      const cols = getCollections()
       try {
-        const userData = await databases.getDocument(
-          dbId,
-          cols.USERS,
-          accountData.$id
-        )
-        user.value = userData as any
+        const userData = await databases.getDocument(dbId, cols.USERS, accountData.$id)
+        assignUser(userData)
       } catch {
-        // fallback: use account data when profile doc is not present
-        user.value = accountData as any
+        assignUser(accountData)
       }
       if (process.client) {
-        console.debug('[auth] loaded user', { id: user.value?.$id, email: user.value?.email, admin: isAdmin.value })
-        if (!adminEmails.length) console.warn('[auth] adminEmails not configured in runtime config')
+        logger.debug('loaded user', {
+          id: user.value?.$id,
+            email: user.value?.email,
+          admin: isAdmin.value
+        })
+        if (!adminEmails.length) logger.warn('adminEmails not configured in runtime config')
       }
     } catch {
       user.value = null
@@ -64,43 +68,32 @@ export const useAuthStore = defineStore("auth", () => {
     try {
       isLoading.value = true
       if (isAuthenticated.value) {
-        // уже есть активная сессия, проверим пользователя
-        if (user.value?.email?.toLowerCase() === email.toLowerCase()) {
-          return true
-        } else {
-          // другая учетка – выйдем и создадим новую сессию
-          try { await account.deleteSession('current') } catch {}
-        }
+        if (user.value?.email?.toLowerCase() === email.toLowerCase()) return true
+        try { await account.deleteSession('current') } catch {}
       } else {
-        // Попробуем получить текущего (вдруг сессия уже есть но store пуст)
-        try { await getCurrentUser(); if (isAuthenticated.value && user.value?.email?.toLowerCase() === email.toLowerCase()) return true } catch {}
+        try {
+          await getCurrentUser()
+          if (isAuthenticated.value && user.value?.email?.toLowerCase() === email.toLowerCase()) return true
+        } catch {}
       }
 
       const acc: any = account as any
       const createSession = async () => {
-        if (typeof acc.createEmailPasswordSession === 'function') {
-          return acc.createEmailPasswordSession({ email, password })
-        } else if (typeof acc.createEmailSession === 'function') {
-          return acc.createEmailSession(email, password)
-        } else if (typeof acc.createSession === 'function') {
-          return acc.createSession(email, password)
-        } else {
-          throw new Error('No compatible Appwrite session creation method found.')
-        }
+        if (typeof acc.createEmailPasswordSession === 'function') return acc.createEmailPasswordSession({ email, password })
+        if (typeof acc.createEmailSession === 'function') return acc.createEmailSession(email, password)
+        if (typeof acc.createSession === 'function') return acc.createSession(email, password)
+        throw new Error('No compatible Appwrite session creation method found.')
       }
 
-      try {
-        await createSession()
-      } catch (e: any) {
+      try { await createSession() } catch (e: any) {
         const msg = String(e?.message || '').toLowerCase()
-        // Если сессия уже существует – считаем успехом
         if (msg.includes('session is active') || msg.includes('already') || e?.code === 409) {
-          // просто продолжим
+          // continue
         } else if (e?.code === 401) {
-          console.error('Login invalid credentials')
+          logger.warn('login invalid credentials')
           return false
         } else {
-          console.error('Login error (create session):', e)
+          logger.error('login error (create session)', e)
           return false
         }
       }
@@ -108,7 +101,7 @@ export const useAuthStore = defineStore("auth", () => {
       await getCurrentUser()
       return !!isAuthenticated.value
     } catch (err) {
-      console.error('Login error (outer):', err)
+      logger.error('login error (outer)', err)
       return false
     } finally {
       isLoading.value = false
@@ -118,7 +111,7 @@ export const useAuthStore = defineStore("auth", () => {
   const register = async (email: string, password: string, name: string) => {
     try {
       isLoading.value = true
-      await account.create("unique()", email, password, name)
+      await account.create('unique()', email, password, name)
       return await login(email, password)
     } finally {
       isLoading.value = false
@@ -127,19 +120,19 @@ export const useAuthStore = defineStore("auth", () => {
 
   const logout = async () => {
     try {
-      await account.deleteSession("current")
+      await account.deleteSession('current')
       user.value = null
       initialized.value = true
       return true
     } catch (error) {
-      console.error("Logout error:", error)
+      logger.error('logout error', error)
       return false
     }
   }
 
   const ensureLoaded = async () => {
     if (!initialized.value) {
-      try { await getCurrentUser() } catch { /* swallow */ }
+      try { await getCurrentUser() } catch {}
     }
   }
 
@@ -152,7 +145,7 @@ export const useAuthStore = defineStore("auth", () => {
   return {
     user: computed(() => user.value),
     isAuthenticated,
-  isAdmin,
+    isAdmin,
     initialized: computed(() => initialized.value),
     isLoading: computed(() => isLoading.value),
     login,
@@ -160,6 +153,6 @@ export const useAuthStore = defineStore("auth", () => {
     logout,
     getCurrentUser,
     ensureLoaded,
-  requireAdmin,
+    requireAdmin
   }
 })

@@ -1,33 +1,35 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { Databases, Query } from 'appwrite'
+import { Databases, Query, type Models } from 'appwrite'
 import { useAppwriteClient, getDatabaseId, getCollections } from '~/utils/appwrite'
 import type { Master } from '~/types/index'
+import { useAsyncResource } from '~/composables/useAsyncResource'
 
 export const useMastersStore = defineStore('masters', () => {
 	const masters = ref<Master[]>([])
-	const loading = ref(false)
 	const error = ref('')
-	const loaded = ref(false)
+	const resource = useAsyncResource<Master[]>(async () => {
+		const client = useAppwriteClient()
+		const db = new Databases(client)
+		const dbId = getDatabaseId()
+		const cols = getCollections()
+		const res = await db.listDocuments(dbId, cols.MASTERS || 'masters', [Query.limit(100)]) as Models.DocumentList<Models.Document & Master>
+		return res.documents as (Models.Document & Master)[]
+	})
 
 	async function fetchMasters() {
-		if (loading.value || loaded.value) return
-		loading.value = true
-		error.value = ''
-		try {
-			const client = useAppwriteClient()
-			const db = new Databases(client)
-			const dbId = getDatabaseId()
-			const cols: any = getCollections()
-			const res: any = await db.listDocuments(dbId, cols.MASTERS, [Query.limit(100)])
-			masters.value = res.documents as Master[]
-			loaded.value = true
-		} catch (e: any) {
-			error.value = e?.message || 'Ошибка загрузки мастеров'
-		} finally {
-			loading.value = false
-		}
+		if (resource.loaded.value || resource.loading.value) return
+		const list = await resource.load()
+		if (list) masters.value = list
+		else error.value = resource.error.value || ''
 	}
 
-	return { masters, loading, error, loaded, fetchMasters }
+	return {
+		masters,
+		loading: resource.loading,
+		loaded: resource.loaded,
+		error,
+		fetchMasters,
+		reload: async () => { resource.reset(); masters.value = []; await fetchMasters() }
+	}
 })

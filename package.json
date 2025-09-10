@@ -7,15 +7,52 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint . --ext .ts,.vue --max-warnings=0",
+    "lint:fix": "eslint . --ext .ts,.vue --fix",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "vitest run",
+    "test:ui": "vitest --ui",
+    "test:watch": "vitest",
+    "test:cov": "vitest run --coverage",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "e2e:report": "playwright show-report"
   },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@vitest/ui"
+      ]
+    }
+  },
+  "eslintIgnore": [
+    "playwright-report",
+    "test-results"
+  ],
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@nuxtjs/tailwindcss": "^6.8.4",
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^24.3.1",
+    "@typescript-eslint/eslint-plugin": "^8.43.0",
+    "@typescript-eslint/parser": "^8.43.0",
     "@vite-pwa/nuxt": "^1.0.4",
+    "@vitest/coverage-v8": "^2.1.9",
+    "@vue/test-utils": "^2.4.6",
+    "eslint": "^9.35.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-tailwindcss": "^3.18.2",
+    "eslint-plugin-unused-imports": "^4.2.0",
+    "eslint-plugin-vue": "^10.4.0",
+    "happy-dom": "^15.11.7",
     "nuxt": "^3.8.0",
+    "prettier": "^3.6.2",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.0.0",
+    "typescript-eslint": "^8.43.0",
+    "vitest": "^2.1.9",
     "vue-tsc": "^2.2.10"
   },
   "dependencies": {
@@ -38,6 +75,9 @@
     "lucide-vue-next": "^0.294.0",
     "pinia": "^2.1.7",
     "vue": "^3.5.17"
+  },
+  "vitest": {
+    "environment": "happy-dom"
   },
   "engines": {
     "node": ">=18.0.0"
