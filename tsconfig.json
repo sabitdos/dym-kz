@@ -1,0 +1,19 @@
+{
+  "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "skipLibCheck": true,
+    "types": ["vue"],
+    "allowJs": true
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.vue"
+  ],
+  "exclude": [
+    "**/*.tsx",
+    "components/ui/**/*.tsx",
+    "hooks/**/*.tsx",
+    "node_modules"
+  ]
+}
